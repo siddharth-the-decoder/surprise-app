@@ -1,182 +1,211 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function App() {
   const [step, setStep] = useState(0);
   const [password, setPassword] = useState("");
-  const [openGift, setOpenGift] = useState(false);
-  const [typedText, setTypedText] = useState("");
 
-  const name = "Garima ❤️";
   const correctPassword = "1234";
 
-  const fullText = `Happy Birthday Garima ❤️  
-  You mean more to me than words can ever express 💖  
-  Every moment with you feels special, and every memory with you is something I cherish deeply ✨  
-  I just want you to know… no matter what, I’ll always be there for you 💕  
-  Stay happy, stay mine ❤️`;
-
+  // 🔥 Auto transitions (reel style)
   useEffect(() => {
-    if (step === 4) {
-      let i = 0;
-      const interval = setInterval(() => {
-        setTypedText(fullText.slice(0, i));
-        i++;
-        if (i > fullText.length) clearInterval(interval);
-      }, 50);
-      return () => clearInterval(interval);
+    if (step >= 4 && step < 8) {
+      const timer = setTimeout(() => {
+        setStep((prev) => prev + 1);
+      }, 4000);
+      return () => clearTimeout(timer);
     }
   }, [step]);
 
-  const container =
-    "h-screen w-screen flex items-center justify-center bg-gradient-to-br from-pink-300 via-rose-200 to-pink-400";
-
-  const card =
-    "w-[90%] max-w-sm h-[80vh] flex flex-col justify-center items-center bg-white rounded-3xl shadow-2xl p-6 text-center";
-
-  const btn =
-    "bg-pink-500 active:scale-95 text-white px-6 py-3 rounded-full mt-4 w-full text-lg font-semibold";
-
-  const input =
-    "border border-gray-400 p-3 rounded-xl w-full text-center text-lg mb-4 text-black placeholder-gray-500";
-
-  const heading = "text-black text-2xl font-semibold mb-4";
-  const text = "text-gray-700 text-lg";
-
   return (
-    <div className={container}>
+    <div className="min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-pink-300 via-rose-200 to-pink-400 relative overflow-hidden">
+      {/* 💖 Floating hearts */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-pink-400 text-xl"
+            initial={{ y: "100%", x: Math.random() * 100 + "%" }}
+            animate={{ y: "-10%" }}
+            transition={{
+              duration: 6 + Math.random() * 4,
+              repeat: Infinity,
+            }}
+          >
+            ❤️
+          </motion.div>
+        ))}
+      </div>
+
       <AnimatePresence mode="wait">
-        {step === 0 && (
-          <motion.div
-            key="0"
-            className={card}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <h2 className={heading}>Enter Password 💌</h2>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={input}
-              placeholder="Enter password"
-            />
-            <button
-              className={btn}
-              onClick={() => password === correctPassword && setStep(1)}
-            >
-              Continue
-            </button>
-          </motion.div>
-        )}
+        {/* 🔄 SWIPE WRAPPER */}
+        <motion.div
+          key={step}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          onDragEnd={(e, info) => {
+            if (info.offset.x < -100) setStep((prev) => Math.min(prev + 1, 8));
+            if (info.offset.x > 100) setStep((prev) => Math.max(prev - 1, 0));
+          }}
+        >
+          {/* STEP 0 */}
+          {step === 0 && (
+            <Card className="w-full max-w-md rounded-3xl shadow-2xl">
+              <CardContent className="p-6 text-center">
+                <h2 className="text-xl mb-4">Enter Password 💌</h2>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="border p-3 rounded-xl w-full mb-4"
+                />
+                <Button
+                  className="w-full"
+                  onClick={() => password === correctPassword && setStep(1)}
+                >
+                  Continue
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
-        {step === 1 && (
-          <motion.div
-            key="1"
-            className={card}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <h1 className={heading}>Do you want to see? 💖</h1>
-            <button className={btn} onClick={() => setStep(3)}>
-              Yes
-            </button>
-            <button className={btn} onClick={() => setStep(2)}>
-              No
-            </button>
-          </motion.div>
-        )}
+          {/* STEP 1 */}
+          {step === 1 && (
+            <Card className="w-full max-w-md rounded-3xl shadow-2xl">
+              <CardContent className="p-6 text-center">
+                <h1 className="text-xl mb-4">Do you want to see? 💖</h1>
+                <Button className="w-full mb-2" onClick={() => setStep(3)}>
+                  Yes
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setStep(2)}
+                >
+                  No
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
-        {step === 2 && (
-          <motion.div key="2" className={card}>
-            <h1 className="text-red-500 text-2xl mb-4">How dare you 😡</h1>
-            <button className={btn} onClick={() => setStep(1)}>
-              Go back
-            </button>
-          </motion.div>
-        )}
+          {/* STEP 2 */}
+          {step === 2 && (
+            <Card className="w-full max-w-md rounded-3xl shadow-2xl">
+              <CardContent className="p-6 text-center">
+                <h1 className="text-red-500 text-xl mb-4">How dare you 😡</h1>
+                <Button onClick={() => setStep(1)}>Go back</Button>
+              </CardContent>
+            </Card>
+          )}
 
-        {step === 3 && (
-          <motion.div key="3" className={card}>
-            <h1 className={heading}>Good choice 😍</h1>
-            <button className={btn} onClick={() => setStep(4)}>
-              Click
-            </button>
-          </motion.div>
-        )}
+          {/* STEP 3 */}
+          {step === 3 && (
+            <Card className="w-full max-w-md rounded-3xl shadow-2xl">
+              <CardContent className="p-6 text-center">
+                <h1 className="text-xl mb-4">That’s a good girl 💖</h1>
+                <Button onClick={() => setStep(4)}>Click</Button>
+              </CardContent>
+            </Card>
+          )}
 
-        {step === 4 && (
-          <motion.div key="4" className={card}>
-            <h1 className="text-3xl text-pink-600 mb-4">🎉</h1>
-            <p className={text + " min-h-[80px]"}>{typedText}</p>
-            <div className="text-2xl mt-2">✨🎊💖🎉✨</div>
-            <button className={btn} onClick={() => setStep(5)}>
-              Next
-            </button>
-          </motion.div>
-        )}
+          {/* STEP 4 */}
+          {step === 4 && (
+            <Card className="w-full max-w-md rounded-3xl shadow-2xl">
+              <CardContent className="p-6 text-center">
+                <h1 className="text-2xl text-pink-600 mb-4">🎉</h1>
+                <p>
+                  Happy Birthday Garima ❤️ You are my favorite notification 💖
+                  Stay happy always 💕
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
-        {step === 5 && (
-          <motion.div key="5" className={card}>
-            <h2 className={heading}>Tap Gift 🎁</h2>
-            <motion.div
-              className="w-32 h-32 bg-pink-400 rounded-xl flex items-center justify-center mt-4 text-4xl"
-              animate={openGift ? { rotate: 10, scale: 1.2 } : { rotate: 0 }}
-              onClick={() => setOpenGift(true)}
-            >
-              🎁
-            </motion.div>
-            {openGift && (
-              <button className={btn} onClick={() => setStep(6)}>
-                Open
-              </button>
-            )}
-          </motion.div>
-        )}
+          {/* STEP 5 */}
+          {step === 5 && (
+            <Card className="w-full max-w-md rounded-3xl shadow-2xl">
+              <CardContent className="p-6 text-center">
+                <h2 className="mb-4">Tap Gift 🎁</h2>
+                <motion.div
+                  className="w-28 h-28 bg-pink-400 rounded-xl flex items-center justify-center text-4xl mx-auto"
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setStep(6)}
+                >
+                  🎁
+                </motion.div>
+              </CardContent>
+            </Card>
+          )}
 
-        {step === 6 && (
-          <motion.div key="6" className={card}>
-            <p className={text}>
-              You are the best thing in my life 💖 Stay happy always 🌸
-            </p>
-            <button className={btn} onClick={() => setStep(7)}>
-              Next
-            </button>
-          </motion.div>
-        )}
+          {/* STEP 6 */}
+          {step === 6 && (
+            <Card className="w-full max-w-md rounded-3xl shadow-2xl">
+              <CardContent className="p-6 text-center">
+                <p>You are the best thing in my life 💖</p>
+              </CardContent>
+            </Card>
+          )}
 
-        {step === 7 && (
-          <motion.div key="7" className={card}>
-            <div className="flex gap-2">
-              <img
-                src="/img1.jpg"
-                className="w-20 h-20 rounded-lg object-cover"
+          {/* STEP 7 - POLAROID */}
+          {step === 7 && (
+            <Card className="w-full max-w-2xl rounded-3xl shadow-2xl">
+              <CardContent className="p-6 text-center">
+                <div className="relative w-full flex justify-center mb-6">
+                  <div className="absolute top-2 w-[90%] h-[2px] bg-gray-400"></div>
+
+                  <div className="flex gap-4 mt-6 flex-wrap justify-center">
+                    {["/IMG1.png", "/IMG2.png", "/IMG3.png", "/IMG4.png"].map(
+                      (img, i) => (
+                        <motion.div
+                          key={i}
+                          className="bg-white p-2 rounded-lg shadow-lg relative"
+                          initial={{ y: -50, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ delay: i * 0.2 }}
+                        >
+                          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-500 rounded-sm"></div>
+                          <img
+                            src={img}
+                            className="w-24 h-28 object-cover rounded-md"
+                          />
+                        </motion.div>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <h2 className="text-xl text-pink-600 mt-4">I LOVE YOU ❤️</h2>
+
+                <Button className="mt-4" onClick={() => setStep(8)}>
+                  Next
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* STEP 8 - VIDEO */}
+          {step === 8 && (
+            <Card className="w-full max-w-2xl h-[80vh] overflow-hidden rounded-3xl relative">
+              <video
+                src="/pp.mp4"
+                autoPlay
+                loop
+                muted
+                className="absolute inset-0 w-full h-full object-cover"
               />
-              <img
-                src="/img2.jpg"
-                className="w-20 h-20 rounded-lg object-cover"
-              />
-              <img
-                src="/img3.jpg"
-                className="w-20 h-20 rounded-lg object-cover"
-              />
-            </div>
-            <h2 className="mt-4 text-xl text-pink-600 font-semibold">
-              I LOVE YOU ❤️
-            </h2>
-            <button className={btn} onClick={() => setStep(8)}>
-              Next
-            </button>
-          </motion.div>
-        )}
+              <div className="absolute inset-0 bg-black/40" />
 
-        {step === 8 && (
-          <motion.div key="8" className={card}>
-            <h1 className={heading}>Here’s a hug 🤗</h1>
-          </motion.div>
-        )}
+              <CardContent className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+                <h1 className="text-3xl text-white mb-2">Here’s a hug 🤗</h1>
+                <p className="text-white">I’ll always be there for you 💖</p>
+              </CardContent>
+            </Card>
+          )}
+        </motion.div>
       </AnimatePresence>
     </div>
   );

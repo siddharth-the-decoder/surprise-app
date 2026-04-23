@@ -10,7 +10,7 @@ export default function App() {
   const [password, setPassword] = useState("");
   const [hearts, setHearts] = useState<any[]>([]);
 
-  const correctPassword = "1234";
+  const correctPassword = "GAMMI";
 
   useEffect(() => {
     const arr = Array.from({ length: 10 }).map(() => ({
@@ -128,52 +128,87 @@ export default function App() {
                   </>
                 )}
 
-{step === 6 && (
-  <div className="flex flex-col items-center justify-center w-full px-4 text-center">
-
-    {/* Childhood photo (polaroid style) */}
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="bg-white p-2 md:p-3 rounded-xl shadow-xl mb-6 rotate-[-4deg]"
-    >
-      <img
-        src="/childhood.png"   // 👉 put your image in /public
-        alt="childhood"
-        className="
-          w-32 h-40
-          sm:w-36 sm:h-44
-          md:w-40 md:h-52
-          object-cover rounded-md
+                {step === 6 && (
+                  <div className="flex flex-col items-center justify-center w-full px-4 text-center">
+                    {/* IMAGE TRANSITION */}
+                    <motion.div
+                      className="relative mb-6"
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.8 }}
+                    >
+                      {/* Childhood Image */}
+                      <motion.img
+                        src="/childhood.png"
+                        alt="childhood"
+                        className="
+          absolute top-0 left-0
+          w-32 h-40 sm:w-36 sm:h-44 md:w-44 md:h-56
+          object-cover rounded-xl shadow-xl
         "
-      />
-    </motion.div>
+                        initial={{ opacity: 1, scale: 1 }}
+                        animate={{ opacity: 0, scale: 1.05 }}
+                        transition={{ delay: 2, duration: 1.6 }}
+                      />
 
-    {/* Message */}
-    <motion.p
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.4 }}
-      className="
-        text-base sm:text-lg md:text-xl
-        leading-relaxed max-w-xs sm:max-w-sm md:max-w-md
-      "
-    >
-      You’ve always been this beautiful 💖 <br />
-      From then to now… nothing has changed 🥺✨ <br />
-      And I feel so lucky to have you in my life 💕
-    </motion.p>
+                      {/* Current Image */}
+                      <motion.img
+                        src="/IMG5.png"
+                        alt="now"
+                        className="
+          w-32 h-40 sm:w-36 sm:h-44 md:w-44 md:h-56
+          object-cover rounded-xl shadow-xl
+        "
+                        initial={{ opacity: 0, scale: 1.15 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 2, duration: 1.6 }}
+                      />
+                    </motion.div>
 
-    {/* Button */}
-    <Button
-      className="mt-6 w-[80%] sm:w-auto rounded-full px-6 py-5 text-lg"
-      onClick={() => setStep(7)}
-    >
-      Next 💖
-    </Button>
-  </div>
-)}
+                    {/* TEXT REVEAL (SLOWER + STORY-LIKE) */}
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1 }}
+                      className="text-base sm:text-lg md:text-xl leading-relaxed max-w-xs sm:max-w-sm md:max-w-md"
+                    >
+                      From this little smile… 💖
+                    </motion.p>
+
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 2.4 }}
+                      className="text-base sm:text-lg md:text-xl leading-relaxed mt-2"
+                    >
+                      to the beautiful person you are today ✨
+                    </motion.p>
+
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 3.8 }}
+                      className="text-base sm:text-lg md:text-xl leading-relaxed mt-2"
+                    >
+                      You’ve always been my favorite 💕
+                    </motion.p>
+
+                    {/* BUTTON (LAST APPEAR) */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 5 }}
+                      className="w-full flex justify-center"
+                    >
+                      <Button
+                        className="mt-6 w-[80%] sm:w-auto rounded-full px-6 py-5 text-lg"
+                        onClick={() => setStep(7)}
+                      >
+                        Next 💖
+                      </Button>
+                    </motion.div>
+                  </div>
+                )}
                 {step === 7 && (
                   <>
                     {/* Rope (only for PC) */}
